@@ -1,6 +1,15 @@
-# goodnight-huier
+# goodnight
 定时发送问候与祝福
 
 ## Env
 
 See [env.json](./env.json).
+
+## Usage
+
+```
+npm install
+```
+```
+npm start
+```
