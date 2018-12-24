@@ -12,8 +12,8 @@ const {
 
 function sendSMS() {
     const smsClient = new SMSClient({accessKeyId, secretAccessKey})
-    const tonight = formatDate()
-    const templateParam = JSON.stringify({"date":tonight})
+    const today = formatDate()
+    const templateParam = JSON.stringify({"date":today})
     smsClient.sendSMS({
         PhoneNumbers: phoneNumbers,     //必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式；发送国际/港澳台消息时，接收号码格式为：国际区号+号码，如“85200000000”
         SignName: signName,             //必填:短信签名-可在短信控制台中找到
@@ -31,9 +31,14 @@ function sendSMS() {
 }
 
 function execSchedule() {
-    schedule.scheduleJob('30 * * * * *', function(){    //6个占位符从左到右分别代表：秒、分、时、日、月、周几
-        console.log('scheduleCronstyle:' + new Date());
-    });
+    const arguments = process.argv.splice(2)
+    if(arguments.length){
+        const scheduleStr = arguments.join(' ')
+        schedule.scheduleJob(scheduleStr, function () {    //6个占位符从左到右分别代表：秒、分、时、日、月、周几
+            sendSMS()
+        })
+    } else {
+        sendSMS()
+    }
 }
-// execSchedule()
-sendSMS()
+execSchedule()
