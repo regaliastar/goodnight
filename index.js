@@ -2,15 +2,15 @@ const schedule = require('node-schedule')
 const SMSClient = require('@alicloud/sms-sdk')
 const formatDate = require('./lib/format-date')
 
-const {
-    ACCESS_KEY_ID: accessKeyId ,
-    ACCESS_KEY_SECRET : secretAccessKey,
-    PHONE_NUMBERS: phoneNumbers,
-    SING_NAME: signName,
-    TEMPLATE_CODE: templateCode
-} = process.env
-
 function sendSMS() {
+    const {
+        ACCESS_KEY_ID: accessKeyId ,
+        ACCESS_KEY_SECRET : secretAccessKey,
+        PHONE_NUMBERS: phoneNumbers,
+        SING_NAME: signName,
+        TEMPLATE_CODE: templateCode
+    } = process.env
+
     const smsClient = new SMSClient({accessKeyId, secretAccessKey})
     const today = formatDate()
     const templateParam = JSON.stringify({"date":today})
@@ -36,9 +36,11 @@ function execSchedule() {
         const scheduleStr = arguments.join(' ')
         schedule.scheduleJob(scheduleStr, function () {    //6个占位符从左到右分别代表：秒、分、时、日、月、周几
             sendSMS()
+            console.log('success to finish task')
         })
     } else {
         sendSMS()
+        console.log('success to finish task')
     }
 }
 execSchedule()
